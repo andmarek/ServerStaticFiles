@@ -1,0 +1,23 @@
+<html>
+    <head></head>
+    <body>
+        <ul>
+            {{range .Posts }}
+            <h1>{{.Title}} </h1>
+            <p> {{.Author}} </p>
+            <p> {{.Date}}</p>
+            <p> {{.Content}}</p>
+            {{end}}
+        </ul>
+        <div>
+            <form method="POST" action="/">
+                <label> Author </label><input name="name" type="text" value="" />
+                <label> Title </label><input name="date" type="text" value="" />
+                <label> Content </label><input name="content" type="text" value="" />
+                <label> Date </label><input name="date" type="text" value="" />
+                <input type="submit" value="submit"/>
+            </form>
+        </div>
+    </body>
+</html>
+
