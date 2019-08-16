@@ -1,0 +1,21 @@
+BEGIN_BLOG_FILE
+
+BLOG
+TITLE-"Test Title 1"
+AUTHOR-"Author 1"
+CONTENT-"Title 1 text"
+ENDBLOG
+
+BLOG
+TITLE "Test Title 2"
+AUTHOR "Author 2"
+CONTENT "Title 2 text"
+ENDBLOG
+
+BLOG
+TITLE "Test Title 3"
+AUTHOR "Author 3"
+CONTENT "Title 3 text"
+ENDBLOG
+
+END_BLOG_FILE
