@@ -9,23 +9,32 @@ import (
     "path/filepath"
 
     )
+type ContentType int
+
+const (
+  Author ContentType = 0
+  Title  ContentType = 1
+  Date   ContentType = 2
+  Post   ContentType = 3
+)
+
 // Struct for blog and page
 type blog struct {
   Author string
   Title string
   Date string
   /* Not sure if we want this as a string*/
-  content string
+  Post string
 }
 
 type Page struct {
   BlogList []blog
 }
 
-func dataLiason(fpath string) {
+func dataLiason(fpath string) string {
   fmt.Println("Entered the appropriate function")
   fmt.Println(fpath)
-
+  var blogContent string
   err := filepath.Walk("./blogs", func(path string, info os.FileInfo, err error) error {
     if err != nil {
       fmt.Printf("path, err: %q:, %v\n", path, err)
@@ -52,9 +61,10 @@ func dataLiason(fpath string) {
     //For building lines 
     var s strings.Builder
     for scanner.Scan() {
-        s.Write(scanner.Bytes() + " ")
-        fmt.Println(s.String())
+        s.Write(scanner.Bytes())
     }
+    blogContent = s.String()
+//    fmt.Println(s.String())
     s.Reset()
 
     return err
@@ -63,14 +73,41 @@ func dataLiason(fpath string) {
   if err != nil {
     log.Fatal("Could not find file")
   }
+  return blogContent
+}
+
+func marshallData(d ContentType, data string, blogInstance *blog) {
+//Place the data into different struct fields
+  if d == Author {
+    blogInstance.Author = data
+    fmt.Println("Author")
+  }
+
+  if d == Date {
+    blogInstance.Date = data
+    fmt.Println("Date")
+  }
+
+  if d == Title {
+    blogInstance.Title = data
+    fmt.Println("Title")
+  }
+
+  if d == Post {
+    blogInstance.Post = data
+    fmt.Println("Post")
+  }
 }
 
 func main() {
-  os.Setenv("BLOGFILE", "/blogs/BLOGFILE")
-  fmt.Println("env" + os.Getenv("BLOGFILE"))
+  var testPage Page
+  var testStruct blog
 
-  fmt.Println("Begin main function")
-  dataLiason("~/Code/ServerStaticFiles/")
+  os.Setenv("BLOGFILE", "/blogs/BLOGFILE")
+  s := dataLiason("~/Code/ServerStaticFiles/")
+  marshallData(Post, s, &testStruct)
+  fmt.Println(s)
+  fmt.Println("testStruct blog post: %s", testStruct.Post)
 
 }
 
