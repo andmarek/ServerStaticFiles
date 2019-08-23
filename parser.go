@@ -1,7 +1,6 @@
 package main
 import (
     "bufio"
-//    "bytes"
     "os"
     "fmt"
     "log"
@@ -31,10 +30,12 @@ type Page struct {
   BlogList []blog
 }
 
+// dataLiason takes text from "BLOGFILE" and returns it as a string.
 func dataLiason(fpath string) string {
-  fmt.Println("Entered the appropriate function")
-  fmt.Println(fpath)
+  fmt.Println("Path: " + fpath)
+
   var blogContent string
+
   err := filepath.Walk("./blogs", func(path string, info os.FileInfo, err error) error {
     if err != nil {
       fmt.Printf("path, err: %q:, %v\n", path, err)
@@ -43,64 +44,63 @@ func dataLiason(fpath string) string {
 
     // Find the file 
     if info.Name() == "BLOGFILE" && info.IsDir() == false  {
-     fmt.Printf("Found file !")
+     fmt.Printf("Found file: %s\n", info.Name())
     }
 
     file, err := os.Open("blogs/BLOGFILE")
-
     if err != nil {
       log.Fatal(err)
     }
 
     defer file.Close()
 
-    //For parsing whole file 
     scanner := bufio.NewScanner(file)
     scanner.Split(bufio.ScanWords)
 
-    //For building lines 
     var s strings.Builder
+
     for scanner.Scan() {
         s.Write(scanner.Bytes())
     }
+
     blogContent = s.String()
-//    fmt.Println(s.String())
+
     s.Reset()
 
     return err
   })
 
   if err != nil {
-    log.Fatal("Could not find file")
+    log.Fatal("Could not find file\n")
   }
+
   return blogContent
 }
-
+// marshallData takes in the type of content, the data (a string) and a
+// reference of a blog struct - placing the data into the blog. 
 func marshallData(d ContentType, data string, blogInstance *blog) {
-//Place the data into different struct fields
   if d == Author {
     blogInstance.Author = data
-    fmt.Println("Author")
+    fmt.Println("[Type]: Author\n")
   }
 
   if d == Date {
     blogInstance.Date = data
-    fmt.Println("Date")
+    fmt.Println("[Type]: Date\n")
   }
 
   if d == Title {
     blogInstance.Title = data
-    fmt.Println("Title")
+    fmt.Println("[Type]: Title\n")
   }
 
   if d == Post {
     blogInstance.Post = data
-    fmt.Println("Post")
+    fmt.Println("[Type]: Content\n")
   }
 }
-
+/*
 func main() {
-  var testPage Page
   var testStruct blog
 
   os.Setenv("BLOGFILE", "/blogs/BLOGFILE")
@@ -110,4 +110,4 @@ func main() {
   fmt.Println("testStruct blog post: %s", testStruct.Post)
 
 }
-
+*/
