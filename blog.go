@@ -15,13 +15,14 @@ type blogSite struct {
     Blogs []*blog
 }
 
-func (bs *blogSite) NewBlog() {
+func (bs *blogSite) NewBlog(path string) {
     blg := new(blog)
-    err := blg.parseBlogFile()
+
+    err := blg.parseBlogFile(path)
+
     if err != nil {
         fmt.Println(err)
     }
-
     bs.Blogs = append(bs.Blogs, blg)
 }
 

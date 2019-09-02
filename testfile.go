@@ -1,9 +1,8 @@
 package main
 
 import (
-	//    "time"
 	"bufio"
-	"errors"
+  "errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -21,20 +20,29 @@ const (
 	blogPrefix = "piece"
 )
 
+//Problem: confused as to where the path is coming from
 func getBlogFiles(dirPath string) ([]string, error) {
+   var pathList []string
 	//Maybe "." because we want it to look at cur dir THEN the dir
-	err := filepath.Walk(".", func(dirPath, f os.FileInfo, err error) error {
+	err := filepath.Walk("blogs/", func(path string, f os.FileInfo, err error) error {
+   // path = dirPath
 		if err != nil {
 			fmt.Printf("Ya'll got an error\n")
 			return err
 		}
-		if !(f.IsDir()) && info.Name().Contains(blogPrefix) {
-			//How to use Base?
-			pathList := append(info.Base())
+		if !(f.IsDir()) && strings.Contains(f.Name(), blogPrefix) {
+			pathList = append(pathList, path)
 			//Remove later
 			fmt.Println(pathList) //
 		}
+    return nil
 	})
+
+  if err != nil {
+
+      return pathList, nil
+  }
+
 	return pathList, nil
 }
 
@@ -44,7 +52,7 @@ func getBlogFiles(dirPath string) ([]string, error) {
 // swap this out for a more efficient markdown parser or something, but this is
 // just something I hacked up in my spare time.
 func (bp *blog) parseBlogFile(path string) error {
-	file, err := os.Open("blogs/piece1")
+	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 	}
