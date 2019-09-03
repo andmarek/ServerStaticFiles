@@ -1,36 +1,52 @@
 package main
 
 import (
-	"fmt"
+    "html/template"
+    "net/http"
+    "fmt"
+    "log"
 )
 
 func main() {
-	paths, _ := getBlogFiles(".")
 
-	tbs := blogSite{}
+    tpl := template.Must(template.ParseFiles("tmpl/testindex.tmpl"))
 
-  fmt.Println(len(paths))
+/* good stuff */
+    paths, _ := getBlogFiles(".")
 
-	for i := range paths {
-      tbs.NewBlog(paths[i])
-	}
+    tbs := blogSite{}
 
-	//Print our paths to test it
-	fmt.Println(paths)
-	//test blog site
-	//create empty blogsite
-	tbs.Name = "Divided We Stand"
+    tbs.Name = "Divided We Stand"
 
-  // No blog ?
-  //Index out of bounds rn
-  fmt.Println(len(tbs.Blogs))
+    fmt.Println(len(paths))
 
-	fmt.Println((*tbs.Blogs[0]).Title)
-	fmt.Println((*tbs.Blogs[0]).Author)
-	fmt.Println((*tbs.Blogs[0]).Post)
+    for i := range paths {
+        tbs.NewBlog(paths[i])
+    }
+/***/
 
-  fmt.Println((*tbs.Blogs[1]).Title)
-	fmt.Println((*tbs.Blogs[1]).Author)
-	fmt.Println((*tbs.Blogs[1]).Post)
+    helloHandler := func(w http.ResponseWriter, req *http.Request) {
+        tpl.Execute(w, tbs)
+    }
+
+    http.HandleFunc("/", helloHandler)
+    log.Fatal(http.ListenAndServe(":8080", nil))
+
+    //Print our paths to test it
+    fmt.Println(paths)
+    //test blog site
+    //create empty blogsite
+
+    // No blog ?
+    //Index out of bounds rn
+    fmt.Println(len(tbs.Blogs))
+
+    fmt.Println((*tbs.Blogs[0]).Title)
+    fmt.Println((*tbs.Blogs[0]).Author)
+    fmt.Println((*tbs.Blogs[0]).Post)
+
+    fmt.Println((*tbs.Blogs[1]).Title)
+    fmt.Println((*tbs.Blogs[1]).Author)
+    fmt.Println((*tbs.Blogs[1]).Post)
 
 }
