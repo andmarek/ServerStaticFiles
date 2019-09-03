@@ -4,37 +4,38 @@ import (
     "crypto/tls"
     "log"
     "net/http"
-//    "html/template"
-    "os"
+    "html/template"
+
     //autocert key generator
     "golang.org/x/crypto/acme/autocert"
 )
-// Need to define data
-
-/*
-func defaultHandler(w http.ResponseWriter, r *http.Request, tmpl *Template) {
-  tmpl.Execute(w, data)
-}
-*/
 
 func main() {
-    var testStruct blog
-    //Get the data from the blogfile and return it as a string 
-    os.Setenv("BLOGFILE", "/blogs/BLOGFILE")
-    // Might not be able to do dataLiason() without s:= first 
-    marshallData(Post,  dataLiason("~/Code/ServerStaticFiles/"), &testStruct)
+    //Template things
+    tpl := template.Must(template.ParseFiles("tmpl/testindex.tmpl"))
 
-//    tmpl := template.Must(template.ParseFiles("Frontend/index.html"))
+    // Create paths slice with a list of string paths
+    paths, _ := getBlogFiles(".")
 
+    //New "The Blog Site"
+    tbs := blogSite{}
+
+    // NewBlog takes in a string argument
+    for i := range paths {
+        tbs.NewBlog(paths[i])
+    }
+
+    tbs.Name = "Divided We Stand"
+
+
+// Just server things xD
     certManager := autocert.Manager{
         Prompt:     autocert.AcceptTOS,
         HostPolicy: autocert.HostWhitelist("helpamericathink.com"),
         Cache:      autocert.DirCache("certs"),
     }
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-//      w.Write([]byte("Hello world"))
-      w.Write([]byte(testStruct.Post))
-     // defaultHandler(w, r, tmpl)
+      tpl.Execute(w, tbs)
     })
 
     server := &http.Server{
