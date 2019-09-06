@@ -13,7 +13,8 @@ import (
 func main() {
     //Template things
 
-    tpl := template.Must(template.ParseFiles("tmpl/nev.html","tmpl/site.tmpl"))
+    tpl := template.Must(template.ParseFiles("tmpl/nev.html","tmpl/site.tmpl","tmpl/blogtmpl.tmpl")
+
     //tpl := template.Must(template.New("tmpl/site.tmpl").ParseGlob("tmpl/*.tmpl"))
     paths, _ := getBlogFiles(".")
 
@@ -26,8 +27,7 @@ func main() {
     tbs.Name = "Divided We Stand"
 
 
-// Just server things xD
-//Cert
+    //Cert for HTTPS
     certManager := autocert.Manager{
         Prompt:     autocert.AcceptTOS,
         HostPolicy: autocert.HostWhitelist("helpamericathink.com"),
@@ -35,12 +35,8 @@ func main() {
     }
 
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-      //;tpl.Execute(w, tbs)
       tpl.ExecuteTemplate(w, "site", tbs)
     })
-
-/*    http.Handle("/static/", http.StripPrefix("/static/",
- *    http.FileServer(http.Dir("static")))) */
 
     server := &http.Server{
         Addr:":https",
@@ -48,7 +44,8 @@ func main() {
             GetCertificate: certManager.GetCertificate,
         },
     }
-//go routine for listen and serve 
+
+    //go routine ;)
     go http.ListenAndServe(":http",certManager.HTTPHandler(nil))
     log.Fatal(server.ListenAndServeTLS("",""))
 }
