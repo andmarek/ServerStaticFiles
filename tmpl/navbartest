@@ -1,8 +1,0 @@
-{{ define "header" }}
-<head>
-  <!-- maybe add javascript later? -->
-</head>
-<body>
-  <p> Hello aliens </p>
-</body>
-{{ end }}
