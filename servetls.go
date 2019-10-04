@@ -13,7 +13,7 @@ import (
 func main() {
     //Template things
 
-    tpl := template.Must(template.ParseFiles("tmpl/nev.html","tmpl/site.tmpl","tmpl/blogtmpl.tmpl")
+    tpl := template.Must(template.ParseFiles("tmpl/real_nav.html","tmpl/site.tmpl","tmpl/blogtmpl.tmpl")
 
     //tpl := template.Must(template.New("tmpl/site.tmpl").ParseGlob("tmpl/*.tmpl"))
     paths, _ := getBlogFiles(".")

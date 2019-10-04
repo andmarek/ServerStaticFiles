@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io"
 
 	//    "log"
 	"net/http"
@@ -11,7 +12,9 @@ import (
 func main() {
 	//Template things
 
-	tpl := template.Must(template.ParseFiles("tmpl/nev.html", "tmpl/site.html", "tmpl/blogtmpl.html"))
+	//Loading blog first, nav then since site puts it together
+	tpl := template.Must(template.ParseFiles("tmpl/blogtmpl.html", "tmpl/real_nav.html", "tmpl/site.html"))
+
 	//    /Users/andrewmarek/ServerStaticFiles/tmpl/blogtmpl.html
 	paths, _ := getBlogFiles(".")
 
@@ -27,13 +30,29 @@ func main() {
 		fmt.Println("title:" + tbs.Blogs[i].Title)
 		fmt.Println("Post:" + tbs.Blogs[i].Post)
 	}
-
-	testHand := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("the test handlder ran")
-		tpl.ExecuteTemplate(w, "site", tbs)
-		//		io.WriteString(w, "dogs")
+	homeHandler := func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Entered the home handler")
+		tpl.ExecuteTemplate(w, "tpl", tbs)
 	}
 
-	http.HandleFunc("/", testHand)
+	// About page
+	aboutHandler := func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Entered the about handler")
+		//	tpl.ExecuteTemplate(w, "", "data structure")
+
+	}
+
+	// Handles any contact page interaction
+	contactHandler := func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello from a HandleFunc #2!\n")
+
+	}
+
+	http.HandleFunc("/", homeHandler)
+
+	// Maybe use http.Handler() for this
+	http.HandleFunc("/blog{n}", blogHandler)
+	http.HandleFunc("/about", aboutHandler)
+	http.HandleFunc("/contact", contactHandler)
 	http.ListenAndServe(":9090", nil)
 }
