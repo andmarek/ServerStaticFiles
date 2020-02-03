@@ -9,7 +9,13 @@ import (
 
 func main() {
 
-    tpl := template.Must(template.ParseFiles("tmpl/testindex.tmpl"))
+    tpl := template.Must(template.ParseFiles("tmpl/testindex.html"))
+
+    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+
+//    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+//    http.Handle("/", http.FileServer(http.Dir("css/")))
+
 
 /* good stuff */
     paths, _ := getBlogFiles(".")
